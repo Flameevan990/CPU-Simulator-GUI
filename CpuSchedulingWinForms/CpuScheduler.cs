@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Zen.Barcode;
 using System.Drawing.Imaging;
 using System.IO;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace CpuSchedulingWinForms
 {
@@ -352,7 +353,7 @@ namespace CpuSchedulingWinForms
                 txtProcess.Focus();
             }
         }
-
+        
         private void timer1_Tick(object sender, EventArgs e)
         {
             if(this.Opacity > 0.0)
@@ -369,99 +370,101 @@ namespace CpuSchedulingWinForms
         {
             this.txtCodeInput.Clear();
         }
-    }
-    private void btnSRTF_Click_1(object sender, EventArgs e)
-{
-    if (txtProcess.Text != "")
-    {
-        Algorithms.SRTFAlgorithm(txtProcess.Text); // Call the SRTF method
-        int numberOfProcess = Int16.Parse(txtProcess.Text);
 
-        // Update progress bars (same logic as other algorithms)
-        if (numberOfProcess <= 10)
+        private void btnSRTF_Click_1(object sender, EventArgs e)
         {
-            this.progressBar1.Increment(4); // CPU progress bar
-            this.progressBar1.SetState(1);
-            this.progressBar2.Increment(13); // Memory progress bar
-            this.progressBar2.SetState(1);
-        }
-        else if (numberOfProcess > 10)
-        {
-            this.progressBar1.Increment(15);
-            this.progressBar1.SetState(1);
-            this.progressBar2.Increment(38);
-            this.progressBar2.SetState(3);
-        }
-
-        // Update ListView (same as other algorithms)
-        listView1.Clear();
-        listView1.View = View.Details;
-        listView1.Columns.Add("Process ID", 150, HorizontalAlignment.Center);
-        listView1.Columns.Add("Quantum Time", 100, HorizontalAlignment.Center);
-
-        for (int i = 0; i < numberOfProcess; i++)
-        {
-            var item = new ListViewItem();
-            item.Text = "Process " + (i + 1);
-            item.SubItems.Add("-"); // SRTF doesn't use a fixed quantum time
-            listView1.Items.Add(item);
-        }
-
-        listView1.Items.Add("\n");
-        listView1.Items.Add("CPU handles: " + numberOfProcess);
-    }
-    else
-    {
-        MessageBox.Show("Enter number of processes", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        txtProcess.Focus();
-    }
-}
-
-private void btnMLFQ_Click_1(object sender, EventArgs e)
-{
-    {
-        if (txtProcess.Text != "")
-        {
-            Algorithms.MLFQAlgorithm(txtProcess.Text); // Call the MLFQ method
-            int numberOfProcess = Int16.Parse(txtProcess.Text);
-
-            // Update progress bars (same logic as other algorithms)
-            if (numberOfProcess <= 10)
+            if (txtProcess.Text != "")
             {
-                this.progressBar1.Increment(4);
-                this.progressBar1.SetState(1);
-                this.progressBar2.Increment(13);
-                this.progressBar2.SetState(1);
+                Algorithms.SRTFAlgorithm(txtProcess.Text); // Call the SRTF method
+                int numberOfProcess = Int16.Parse(txtProcess.Text);
+
+                // Update progress bars (same logic as other algorithms)
+                if (numberOfProcess <= 10)
+                {
+                    this.progressBar1.Increment(4); // CPU progress bar
+                    this.progressBar1.SetState(1);
+                    this.progressBar2.Increment(13); // Memory progress bar
+                    this.progressBar2.SetState(1);
+                }
+                else if (numberOfProcess > 10)
+                {
+                    this.progressBar1.Increment(15);
+                    this.progressBar1.SetState(1);
+                    this.progressBar2.Increment(38);
+                    this.progressBar2.SetState(3);
+                }
+
+                // Update ListView (same as other algorithms)
+                listView1.Clear();
+                listView1.View = View.Details;
+                listView1.Columns.Add("Process ID", 150, HorizontalAlignment.Center);
+                listView1.Columns.Add("Quantum Time", 100, HorizontalAlignment.Center);
+
+                for (int i = 0; i < numberOfProcess; i++)
+                {
+                    var item = new ListViewItem();
+                    item.Text = "Process " + (i + 1);
+                    item.SubItems.Add("-"); // SRTF doesn't use a fixed quantum time
+                    listView1.Items.Add(item);
+                }
+
+                listView1.Items.Add("\n");
+                listView1.Items.Add("CPU handles: " + numberOfProcess);
             }
-            else if (numberOfProcess > 10)
+            else
             {
-                this.progressBar1.Increment(15);
-                this.progressBar1.SetState(1);
-                this.progressBar2.Increment(38);
-                this.progressBar2.SetState(3);
+                MessageBox.Show("Enter number of processes", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtProcess.Focus();
             }
-
-            // Update ListView
-            listView1.Clear();
-            listView1.View = View.Details;
-            listView1.Columns.Add("Process ID", 150, HorizontalAlignment.Center);
-            listView1.Columns.Add("Queue Level", 100, HorizontalAlignment.Center); // MLFQ-specific column
-
-            for (int i = 0; i < numberOfProcess; i++)
-            {
-                var item = new ListViewItem();
-                item.Text = "Process " + (i + 1);
-                item.SubItems.Add("Dynamic"); // MLFQ uses dynamic queue levels
-                listView1.Items.Add(item);
-            }
-
-            listView1.Items.Add("\n");
-            listView1.Items.Add("CPU handles: " + numberOfProcess);
         }
-        else
+
+        private void btnMLFQ_Click_1(object sender, EventArgs e)
         {
-            MessageBox.Show("Enter number of processes", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            txtProcess.Focus();
+            {
+                if (txtProcess.Text != "")
+                {
+                    Algorithms.MLFQAlgorithm(txtProcess.Text); // Call the MLFQ method
+                    int numberOfProcess = Int16.Parse(txtProcess.Text);
+
+                    // Update progress bars (same logic as other algorithms)
+                    if (numberOfProcess <= 10)
+                    {
+                        this.progressBar1.Increment(4);
+                        this.progressBar1.SetState(1);
+                        this.progressBar2.Increment(13);
+                        this.progressBar2.SetState(1);
+                    }
+                    else if (numberOfProcess > 10)
+                    {
+                        this.progressBar1.Increment(15);
+                        this.progressBar1.SetState(1);
+                        this.progressBar2.Increment(38);
+                        this.progressBar2.SetState(3);
+                    }
+
+                    // Update ListView
+                    listView1.Clear();
+                    listView1.View = View.Details;
+                    listView1.Columns.Add("Process ID", 150, HorizontalAlignment.Center);
+                    listView1.Columns.Add("Queue Level", 100, HorizontalAlignment.Center); // MLFQ-specific column
+
+                    for (int i = 0; i < numberOfProcess; i++)
+                    {
+                        var item = new ListViewItem();
+                        item.Text = "Process " + (i + 1);
+                        item.SubItems.Add("Dynamic"); // MLFQ uses dynamic queue levels
+                        listView1.Items.Add(item);
+                    }
+
+                    listView1.Items.Add("\n");
+                    listView1.Items.Add("CPU handles: " + numberOfProcess);
+                }
+                else
+                {
+                    MessageBox.Show("Enter number of processes", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtProcess.Focus();
+                }
+            }
         }
     }
 }

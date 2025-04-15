@@ -340,179 +340,177 @@ namespace CpuSchedulingWinForms
                 MessageBox.Show("Average turnaround time for " + np + " processes: " + averageTurnaroundTime + " sec(s)", "", MessageBoxButtons.OK);
             }
         }
-        // Code for SRTF and MLFQ Begins
-    public static void SRTFAlgorithm(string userInput)
-    {
-    int np = Convert.ToInt16(userInput);
-    double[] arrivalTime = new double[np];
-    double[] burstTime = new double[np];
-    double[] remainingTime = new double[np];
-    double[] waitingTime = new double[np];
-    double[] turnaroundTime = new double[np];
-    double currentTime = 0;
-    double totalWaitTime = 0;
-    double totalTurnaroundTime = 0;
-    int completedProcesses = 0;
-
-    DialogResult result = MessageBox.Show("Shortest Remaining Time First (SRTF) Scheduling",
-                                        "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-    if (result == DialogResult.Yes)
-    {
-        // Get arrival times and burst times
-        for (int i = 0; i < np; i++)
+        public static void SRTFAlgorithm(string userInput)
         {
-            arrivalTime[i] = Convert.ToDouble(
-                Microsoft.VisualBasic.Interaction.InputBox($"Enter arrival time for P{i + 1}:",
-                                                          "Arrival Time", "", -1, -1));
-            burstTime[i] = Convert.ToDouble(
-                Microsoft.VisualBasic.Interaction.InputBox($"Enter burst time for P{i + 1}:",
-                                                          "Burst Time", "", -1, -1));
-            remainingTime[i] = burstTime[i];
-        }
+            int np = Convert.ToInt16(userInput);
+            double[] arrivalTime = new double[np];
+            double[] burstTime = new double[np];
+            double[] remainingTime = new double[np];
+            double[] waitingTime = new double[np];
+            double[] turnaroundTime = new double[np];
+            double currentTime = 0;
+            double totalWaitTime = 0;
+            double totalTurnaroundTime = 0;
+            int completedProcesses = 0;
 
-        while (completedProcesses < np)
-        {
-            int shortestJobIndex = -1;
-            double shortestRemainingTime = double.MaxValue;
+            DialogResult result = MessageBox.Show("Shortest Remaining Time First (SRTF) Scheduling",
+                                                "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 
-            // Find the process with the shortest remaining time that has arrived
-            for (int i = 0; i < np; i++)
+            if (result == DialogResult.Yes)
             {
-                if (arrivalTime[i] <= currentTime && remainingTime[i] > 0 &&
-                    remainingTime[i] < shortestRemainingTime)
-                {
-                    shortestRemainingTime = remainingTime[i];
-                    shortestJobIndex = i;
-                }
-            }
-
-            if (shortestJobIndex == -1)
-            {
-                currentTime++;
-                continue;
-            }
-
-            // Execute the process for 1 unit of time
-            remainingTime[shortestJobIndex]--;
-            currentTime++;
-
-            // If process is completed
-            if (remainingTime[shortestJobIndex] == 0)
-            {
-                completedProcesses++;
-                turnaroundTime[shortestJobIndex] = currentTime - arrivalTime[shortestJobIndex];
-                waitingTime[shortestJobIndex] = turnaroundTime[shortestJobIndex] - burstTime[shortestJobIndex];
-                totalWaitTime += waitingTime[shortestJobIndex];
-                totalTurnaroundTime += turnaroundTime[shortestJobIndex];
-
-                MessageBox.Show($"Process P{shortestJobIndex + 1} completed:\n" +
-                                $"Waiting Time: {waitingTime[shortestJobIndex]}\n" +
-                                $"Turnaround Time: {turnaroundTime[shortestJobIndex]}",
-                                "Process Completed", MessageBoxButtons.OK);
-            }
-        }
-
-        // Display averages
-        MessageBox.Show($"Average Waiting Time: {totalWaitTime / np}\n" +
-                        $"Average Turnaround Time: {totalTurnaroundTime / np}",
-                        "SRTF Results", MessageBoxButtons.OK);
-    }
-}
-public static void MLFQAlgorithm(string userInput)
-{
-    int np = Convert.ToInt16(userInput);
-    double[] arrivalTime = new double[np];
-    double[] burstTime = new double[np];
-    double[] remainingTime = new double[np];
-    double[] waitingTime = new double[np];
-    double[] completionTime = new double[np];
-    int[] queueLevel = new int[np]; // 0=Highest, 1=Medium, 2=Lowest
-    double currentTime = 0;
-    int completedProcesses = 0;
-
-    DialogResult result = MessageBox.Show("Multi-Level Feedback Queue (MLFQ) Scheduling",
-                                        "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-    if (result == DialogResult.Yes)
-    {
-        // Input arrival and burst times
-        for (int i = 0; i < np; i++)
-        {
-            arrivalTime[i] = Convert.ToDouble(
-                Microsoft.VisualBasic.Interaction.InputBox($"Enter arrival time for P{i + 1}:",
-                                                          "Arrival Time", "", -1, -1));
-            burstTime[i] = Convert.ToDouble(
-                Microsoft.VisualBasic.Interaction.InputBox($"Enter burst time for P{i + 1}:",
-                                                          "Burst Time", "", -1, -1));
-            remainingTime[i] = burstTime[i];
-            queueLevel[i] = 0; // Start in highest-priority queue
-        }
-
-        while (completedProcesses < np)
-        {
-            bool executed = false;
-
-            // Check queues in priority order (0 → 1 → 2)
-            for (int queue = 0; queue < 3; queue++)
-            {
+                // Get arrival times and burst times
                 for (int i = 0; i < np; i++)
                 {
-                    if (arrivalTime[i] <= currentTime &&
-                        remainingTime[i] > 0 &&
-                        queueLevel[i] == queue)
+                    arrivalTime[i] = Convert.ToDouble(
+                        Microsoft.VisualBasic.Interaction.InputBox($"Enter arrival time for P{i + 1}:",
+                                                                  "Arrival Time", "", -1, -1));
+                    burstTime[i] = Convert.ToDouble(
+                        Microsoft.VisualBasic.Interaction.InputBox($"Enter burst time for P{i + 1}:",
+                                                                  "Burst Time", "", -1, -1));
+                    remainingTime[i] = burstTime[i];
+                }
+
+                while (completedProcesses < np)
+                {
+                    int shortestJobIndex = -1;
+                    double shortestRemainingTime = double.MaxValue;
+
+                    // Find the process with the shortest remaining time that has arrived
+                    for (int i = 0; i < np; i++)
                     {
-                        executed = true;
-                        double timeQuantum = (queue == 0) ? 4 : (queue == 1) ? 8 : double.MaxValue;
-                        double executionTime = Math.Min(timeQuantum, remainingTime[i]);
-
-                        // Update waiting time for other processes
-                        for (int j = 0; j < np; j++)
+                        if (arrivalTime[i] <= currentTime && remainingTime[i] > 0 &&
+                            remainingTime[i] < shortestRemainingTime)
                         {
-                            if (j != i && arrivalTime[j] <= currentTime && remainingTime[j] > 0)
-                            {
-                                waitingTime[j] += executionTime;
-                            }
+                            shortestRemainingTime = remainingTime[i];
+                            shortestJobIndex = i;
                         }
+                    }
 
-                        remainingTime[i] -= executionTime;
-                        currentTime += executionTime;
+                    if (shortestJobIndex == -1)
+                    {
+                        currentTime++;
+                        continue;
+                    }
 
-                        // Move to lower queue if not finished
-                        if (remainingTime[i] > 0 && queue < 2)
-                        {
-                            queueLevel[i] = queue + 1;
-                        }
-                        else if (remainingTime[i] == 0)
-                        {
-                            completionTime[i] = currentTime;
-                            completedProcesses++;
-                        }
-                        break; // Execute one process per iteration
+                    // Execute the process for 1 unit of time
+                    remainingTime[shortestJobIndex]--;
+                    currentTime++;
+
+                    // If process is completed
+                    if (remainingTime[shortestJobIndex] == 0)
+                    {
+                        completedProcesses++;
+                        turnaroundTime[shortestJobIndex] = currentTime - arrivalTime[shortestJobIndex];
+                        waitingTime[shortestJobIndex] = turnaroundTime[shortestJobIndex] - burstTime[shortestJobIndex];
+                        totalWaitTime += waitingTime[shortestJobIndex];
+                        totalTurnaroundTime += turnaroundTime[shortestJobIndex];
+
+                        MessageBox.Show($"Process P{shortestJobIndex + 1} completed:\n" +
+                                        $"Waiting Time: {waitingTime[shortestJobIndex]}\n" +
+                                        $"Turnaround Time: {turnaroundTime[shortestJobIndex]}",
+                                        "Process Completed", MessageBoxButtons.OK);
                     }
                 }
-                if (executed) break; // Skip lower queues if a process was executed
+
+                // Display averages
+                MessageBox.Show($"Average Waiting Time: {totalWaitTime / np}\n" +
+                                $"Average Turnaround Time: {totalTurnaroundTime / np}",
+                                "SRTF Results", MessageBoxButtons.OK);
             }
-
-            if (!executed) currentTime++; // Idle CPU if no process was ready
         }
-
-        // Calculate metrics
-        double totalWaitTime = 0;
-        double totalTurnaroundTime = 0;
-        for (int i = 0; i < np; i++)
+        public static void MLFQAlgorithm(string userInput)
         {
-            double turnaround = completionTime[i] - arrivalTime[i];
-            totalTurnaroundTime += turnaround;
-            totalWaitTime += waitingTime[i];
-        }
+            int np = Convert.ToInt16(userInput);
+            double[] arrivalTime = new double[np];
+            double[] burstTime = new double[np];
+            double[] remainingTime = new double[np];
+            double[] waitingTime = new double[np];
+            double[] completionTime = new double[np];
+            int[] queueLevel = new int[np]; // 0=Highest, 1=Medium, 2=Lowest
+            double currentTime = 0;
+            int completedProcesses = 0;
 
-        MessageBox.Show($"Average Waiting Time: {totalWaitTime / np}\n" +
-                        $"Average Turnaround Time: {totalTurnaroundTime / np}",
-                        "MLFQ Results", MessageBoxButtons.OK);
-    }
-}
-    
+            DialogResult result = MessageBox.Show("Multi-Level Feedback Queue (MLFQ) Scheduling",
+                                                "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+
+            if (result == DialogResult.Yes)
+            {
+                // Input arrival and burst times
+                for (int i = 0; i < np; i++)
+                {
+                    arrivalTime[i] = Convert.ToDouble(
+                        Microsoft.VisualBasic.Interaction.InputBox($"Enter arrival time for P{i + 1}:",
+                                                                  "Arrival Time", "", -1, -1));
+                    burstTime[i] = Convert.ToDouble(
+                        Microsoft.VisualBasic.Interaction.InputBox($"Enter burst time for P{i + 1}:",
+                                                                  "Burst Time", "", -1, -1));
+                    remainingTime[i] = burstTime[i];
+                    queueLevel[i] = 0; // Start in highest-priority queue
+                }
+
+                while (completedProcesses < np)
+                {
+                    bool executed = false;
+
+                    // Check queues in priority order (0 → 1 → 2)
+                    for (int queue = 0; queue < 3; queue++)
+                    {
+                        for (int i = 0; i < np; i++)
+                        {
+                            if (arrivalTime[i] <= currentTime &&
+                                remainingTime[i] > 0 &&
+                                queueLevel[i] == queue)
+                            {
+                                executed = true;
+                                double timeQuantum = (queue == 0) ? 4 : (queue == 1) ? 8 : double.MaxValue;
+                                double executionTime = Math.Min(timeQuantum, remainingTime[i]);
+
+                                // Update waiting time for other processes
+                                for (int j = 0; j < np; j++)
+                                {
+                                    if (j != i && arrivalTime[j] <= currentTime && remainingTime[j] > 0)
+                                    {
+                                        waitingTime[j] += executionTime;
+                                    }
+                                }
+
+                                remainingTime[i] -= executionTime;
+                                currentTime += executionTime;
+
+                                // Move to lower queue if not finished
+                                if (remainingTime[i] > 0 && queue < 2)
+                                {
+                                    queueLevel[i] = queue + 1;
+                                }
+                                else if (remainingTime[i] == 0)
+                                {
+                                    completionTime[i] = currentTime;
+                                    completedProcesses++;
+                                }
+                                break; // Execute one process per iteration
+                            }
+                        }
+                        if (executed) break; // Skip lower queues if a process was executed
+                    }
+
+                    if (!executed) currentTime++; // Idle CPU if no process was ready
+                }
+
+                // Calculate metrics
+                double totalWaitTime = 0;
+                double totalTurnaroundTime = 0;
+                for (int i = 0; i < np; i++)
+                {
+                    double turnaround = completionTime[i] - arrivalTime[i];
+                    totalTurnaroundTime += turnaround;
+                    totalWaitTime += waitingTime[i];
+                }
+
+                MessageBox.Show($"Average Waiting Time: {totalWaitTime / np}\n" +
+                                $"Average Turnaround Time: {totalTurnaroundTime / np}",
+                                "MLFQ Results", MessageBoxButtons.OK);
+            }
+        }
     }
 }
 
