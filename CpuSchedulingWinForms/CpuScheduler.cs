@@ -285,6 +285,16 @@ namespace CpuSchedulingWinForms
             this.progressBar2.Increment(17);
             listView1.View = View.Details;
             listView1.GridLines = true;
+
+            // Initialize tooltips for the new buttons
+            toolTip1.SetToolTip(btnSRTF, "Shortest Remaining Time First (Preemptive)");
+            toolTip1.SetToolTip(btnMLFQ, "Multi-Level Feedback Queue (Dynamic Priority)");
+
+            // Optional: Add tooltips for existing buttons for consistency
+            toolTip1.SetToolTip(btnFCFS, "First Come First Serve (Non-Preemptive)");
+            toolTip1.SetToolTip(btnSJF, "Shortest Job First (Non-Preemptive)");
+            toolTip1.SetToolTip(btnPriority, "Priority Scheduling");
+            toolTip1.SetToolTip(btnRoundRobin, "Round Robin (Time Quantum)");
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -358,6 +368,53 @@ namespace CpuSchedulingWinForms
         private void txtCodeInput_Click(object sender, EventArgs e)
         {
             this.txtCodeInput.Clear();
+        }
+    }
+    private void btnMLFQ_Click_1(object sender, EventArgs e)
+{
+    {
+        if (txtProcess.Text != "")
+        {
+            Algorithms.MLFQAlgorithm(txtProcess.Text); // Call the MLFQ method
+            int numberOfProcess = Int16.Parse(txtProcess.Text);
+
+            // Update progress bars (same logic as other algorithms)
+            if (numberOfProcess <= 10)
+            {
+                this.progressBar1.Increment(4);
+                this.progressBar1.SetState(1);
+                this.progressBar2.Increment(13);
+                this.progressBar2.SetState(1);
+            }
+            else if (numberOfProcess > 10)
+            {
+                this.progressBar1.Increment(15);
+                this.progressBar1.SetState(1);
+                this.progressBar2.Increment(38);
+                this.progressBar2.SetState(3);
+            }
+
+            // Update ListView
+            listView1.Clear();
+            listView1.View = View.Details;
+            listView1.Columns.Add("Process ID", 150, HorizontalAlignment.Center);
+            listView1.Columns.Add("Queue Level", 100, HorizontalAlignment.Center); // MLFQ-specific column
+
+            for (int i = 0; i < numberOfProcess; i++)
+            {
+                var item = new ListViewItem();
+                item.Text = "Process " + (i + 1);
+                item.SubItems.Add("Dynamic"); // MLFQ uses dynamic queue levels
+                listView1.Items.Add(item);
+            }
+
+            listView1.Items.Add("\n");
+            listView1.Items.Add("CPU handles: " + numberOfProcess);
+        }
+        else
+        {
+            MessageBox.Show("Enter number of processes", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            txtProcess.Focus();
         }
     }
 }
