@@ -291,7 +291,7 @@ namespace CpuSchedulingWinForms
             toolTip1.SetToolTip(btnSRTF, "Shortest Remaining Time First (Preemptive)");
             toolTip1.SetToolTip(btnMLFQ, "Multi-Level Feedback Queue (Dynamic Priority)");
 
-            // Optional: Add tooltips for existing buttons for consistency
+            // Add tooltips for existing buttons
             toolTip1.SetToolTip(btnFCFS, "First Come First Serve (Non-Preemptive)");
             toolTip1.SetToolTip(btnSJF, "Shortest Job First (Non-Preemptive)");
             toolTip1.SetToolTip(btnPriority, "Priority Scheduling");
